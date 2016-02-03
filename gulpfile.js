@@ -3,13 +3,19 @@
 var gulp = require('gulp');
 var connect = require('gulp-connect'); //Runs a local dev server
 var open = require('gulp-open'); //Open a URL in a web browser
+//Next three are alternatives to Webpack
+var browserify = require('browserify'); //Bundles JS
+var reactify = require('reactify'); //Transforms React JSX to JS
+var source = require('vinyl-source-stream'); //Use conventional text streams with Gulp
 
 var config = {
   port: 9876,
   devBaseUrl: 'http://localhost',
   paths: {
     html: './src/*.html', //Find anything that ends in html
-    dist: './dist'
+    js: './src/**/*.js',
+    dist: './dist',
+    mainJs: './src/main.js'
   }
 }
 
@@ -36,10 +42,21 @@ gulp.task('html', function() {
     .pipe(connect.reload()); //Reload when this happens
 });
 
+//Need a task for JS - How to setup Browserify
+gulp.task('js', function() {
+  browserify(config.paths.mainJs)
+    .transform(reactify) //Transform any JS we get and compile JSX
+    .bundle() //Put it all into one file
+    .on('error', console.error.bind(console)) //Error messaging on the console
+    .pipe(source('bundle.js')) //Define what our bundle will be named
+    .pipe(gulp.dest(config.paths.dist + '/scripts')) //Put under scripts
+    .pipe(connect.reload()); //Reloads the app with JS changes, seeing the latest version in the browser
+});
+
 //Need a task to watch files and do a live reload
 gulp.task('watch', function() {
   gulp.watch(config.paths.html, ['html']);
 });
 
 //Need a default task
-gulp.task('default', ['html', 'open', 'watch']); //Now I can run html & open, when I type in Gulp on he command line
+gulp.task('default', ['html', 'js', 'open', 'watch']); //Now I can run these items, when I type in Gulp on he command line
