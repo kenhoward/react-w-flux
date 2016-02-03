@@ -9,6 +9,8 @@ var reactify = require('reactify'); //Transforms React JSX to JS
 var source = require('vinyl-source-stream'); //Use conventional text streams with Gulp
 //CSS task to handle our bootstrap work
 var concat = require('gulp-concat'); //Concatenates files
+//Adding ESLint
+var lint = require('gulp-eslint'); //Lint our JS files, including JSX
 
 var config = {
   port: 9876,
@@ -66,10 +68,18 @@ gulp.task('css', function() {
     .pipe(gulp.dest(config.paths.dist + '/css')); //Same as before but for css
 });
 
+//Need a Lint task
+gulp.task('lint', function() {
+  return gulp.src(config.paths.js)
+    .pipe(lint({ config: 'eslint.config.json' }))
+    .pipe(lint.format());
+});
+
 //Need a task to watch files and do a live reload
 gulp.task('watch', function() {
   gulp.watch(config.paths.html, ['html']);
+  gulp.watch(config.paths.js, ['js', 'lint']);
 });
 
 //Need a default task
-gulp.task('default', ['html', 'js', 'css', 'open', 'watch']); //Now I can run these items, when I type in Gulp on he command line
+gulp.task('default', ['html', 'js', 'css', 'lint', 'open', 'watch']); //Now I can run these items, when I type in Gulp on he command line
