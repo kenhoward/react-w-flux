@@ -18,9 +18,11 @@ var config = {
   paths: {
     html: './src/*.html', //Find anything that ends in html
     js: './src/**/*.js',
+    images: './src/images/*',
     css: [
       'node_modules/bootstrap/dist/css/bootstrap.min.css',
-      'node_modules/bootstrap/dist/css/bootstrap-theme.min.css'
+      'node_modules/bootstrap/dist/css/bootstrap-theme.min.css',
+      './src/styles/*.css'
     ],
     dist: './dist',
     mainJs: './src/main.js'
@@ -68,6 +70,17 @@ gulp.task('css', function() {
     .pipe(gulp.dest(config.paths.dist + '/css')); //Same as before but for css
 });
 
+//Need a task for images
+gulp.task('images', function() {
+  gulp.src(config.paths.images)
+    .pipe(gulp.dest(config.paths.dist + '/images'))
+    .pipe(connect.reload());
+
+  //Publish Favicon
+  // gulp.src('./src/favicon.ico')
+  //   .pipe(gulp.dest(config.paths.dist));
+});
+
 //Need a Lint task
 gulp.task('lint', function() {
   return gulp.src(config.paths.js)
@@ -82,4 +95,4 @@ gulp.task('watch', function() {
 });
 
 //Need a default task
-gulp.task('default', ['html', 'js', 'css', 'lint', 'open', 'watch']); //Now I can run these items, when I type in Gulp on he command line
+gulp.task('default', ['html', 'js', 'css', 'images', 'lint', 'open', 'watch']); //Now I can run these items, when I type in Gulp on he command line
