@@ -13,7 +13,8 @@ var Redirect = Router.Redirect;
 var routes = (
   <Route name="app" path="/" handler={require('./components/app')}>
     <DefaultRoute handler={require('./components/homePage')} />
-    <Route name="authors" path="happy-days" handler={require('./components/authors/authorPage')} />
+    <Route name="authors" path="happy-authors" handler={require('./components/authors/authorPage')} />
+    <Route name="addAuthor" path="add-em" handler={require('./components/authors/manageAuthorPage')} />
     <Route name="about" handler={require('./components/about/aboutPage')} />
     <NotFoundRoute handler={require('./components/404')} />
     <Redirect from="about-us" to="about" />

@@ -46879,7 +46879,57 @@ var App = React.createClass({displayName: "App",
 
 module.exports = App;
 
-},{"./common/header":205,"jquery":1,"react":197,"react-router":28}],203:[function(require,module,exports){
+},{"./common/header":207,"jquery":1,"react":197,"react-router":28}],203:[function(require,module,exports){
+"use strict";
+
+//This will hold the form [Module 8]
+var React = require('react');
+
+var AuthorForm = React.createClass({displayName: "AuthorForm",
+  render: function() {
+    return (
+      React.createElement("div", {className: "container"}, 
+        React.createElement("form", null, 
+          React.createElement("h1", null, "Manage Author"), 
+          React.createElement("label", {htmlFor: "firstName"}, "First Name"), 
+          React.createElement("input", {type: "text", 
+            name: "firstName", 
+            className: "form-control", 
+            placeholder: "First Name", 
+            ref: "firstName", 
+            onChange: this.props.onChange, 
+            value: this.props.author.firstName}), 
+          React.createElement("br", null), 
+
+          React.createElement("label", {htmlFor: "lastName"}, "Last Name"), 
+          React.createElement("input", {type: "text", 
+            name: "lastName", 
+            className: "form-control", 
+            placeholder: "Last Name", 
+            ref: "lastName", 
+            onChange: this.props.onChange, 
+            value: this.props.author.lastName}), 
+          React.createElement("br", null), 
+
+          React.createElement("input", {type: "submit", value: "Save", className: "btn btn-default"})
+        )
+      )
+    );
+  }
+});
+
+module.exports = AuthorForm;
+
+/*
+  [Module 8] Just having the form above did not work, with a value="" (empty string).
+  I needed to add {this.props.author.firstName and lastName}.
+  This won't work until I do a getInitialState in manageAuthorPage
+
+  we'll need a change handler for both inputs (onChange)
+  [/Module 8]
+*/
+
+},{"react":197}],204:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -46916,10 +46966,13 @@ var AuthorList = React.createClass({displayName: "AuthorList",
 
 module.exports = AuthorList;
 
-},{"react":197}],204:[function(require,module,exports){
+},{"react":197}],205:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
+//Creating Link/React-Router for adding new author [Module 8]
+var Router = require('react-router');
+var Link = require('react-router').Link;
 var AuthorApi = require('../../api/authorApi');
 var AuthorList = require('./authorList');
 
@@ -46938,6 +46991,7 @@ var Authors = React.createClass({displayName: "Authors",
     return (
       React.createElement("div", {className: "container"}, 
         React.createElement("h1", null, "Authors"), 
+        React.createElement(Link, {to: "addAuthor", className: "btn btn-default"}, "Add Author"), 
         React.createElement(AuthorList, {authors: this.state.authors})
       )
     );
@@ -46946,7 +47000,49 @@ var Authors = React.createClass({displayName: "Authors",
 
 module.exports = Authors;
 
-},{"../../api/authorApi":198,"./authorList":203,"react":197}],205:[function(require,module,exports){
+},{"../../api/authorApi":198,"./authorList":204,"react":197,"react-router":28}],206:[function(require,module,exports){
+"use strict";
+
+//Beginning of forms [Module 8]
+var React = require('react');
+var AuthorForm = require('./authorForm');
+
+var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
+  getInitialState: function() {
+    return {
+      author: { id: '', firstName: '', lastName: '' }
+    };
+  },
+  setAuthorState: function() {
+    var field = event.target.name;
+    var value = event.target.value;
+    this.state.author[field] = value;
+    return this.setState({ author: this.state.author });
+  },
+  render: function() {
+    return (
+      React.createElement(AuthorForm, {
+        author: "{this.state.author}", 
+        onChange: this.setAuthorState})
+    );
+  }
+});
+
+module.exports = ManageAuthorPage;
+
+/*
+  [Module 8]In order for my form to work (in authorForm), I needed to do this getInitialState
+  I also, needed to update the <AuthorForm /> to reflect the this.state.author
+  (please see changes made in authorForm)
+
+  Then I need to do the setAuthorState function to save the new data. This will
+  be called for every key pressed
+
+  Then I'll need to add onChange to pass into the AuthorForm
+  [/Module 8]
+*/
+
+},{"./authorForm":203,"react":197}],207:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -46999,7 +47095,7 @@ module.exports = Header;
     <li><Link to="about">About</Link></li>
 */
 
-},{"react":197,"react-router":28}],206:[function(require,module,exports){
+},{"react":197,"react-router":28}],208:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -47023,7 +47119,7 @@ var Home = React.createClass({displayName: "Home",
 
 module.exports = Home;
 
-},{"react":197,"react-router":28}],207:[function(require,module,exports){
+},{"react":197,"react-router":28}],209:[function(require,module,exports){
 //$ = jQuery = require('jquery'); //Referencing jQuery by 'jQuery' or $ //Used here b4 react-router --> moved to app.js
 "use strict";
 
@@ -47096,7 +47192,7 @@ render();
 
 */
 
-},{"./routes":208,"react":197,"react-router":28}],208:[function(require,module,exports){
+},{"./routes":210,"react":197,"react-router":28}],210:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -47112,7 +47208,8 @@ var Redirect = Router.Redirect;
 var routes = (
   React.createElement(Route, {name: "app", path: "/", handler: require('./components/app')}, 
     React.createElement(DefaultRoute, {handler: require('./components/homePage')}), 
-    React.createElement(Route, {name: "authors", path: "happy-days", handler: require('./components/authors/authorPage')}), 
+    React.createElement(Route, {name: "authors", path: "happy-authors", handler: require('./components/authors/authorPage')}), 
+    React.createElement(Route, {name: "addAuthor", path: "add-em", handler: require('./components/authors/manageAuthorPage')}), 
     React.createElement(Route, {name: "about", handler: require('./components/about/aboutPage')}), 
     React.createElement(NotFoundRoute, {handler: require('./components/404')}), 
     React.createElement(Redirect, {from: "about-us", to: "about"}), 
@@ -47123,4 +47220,4 @@ var routes = (
 
 module.exports = routes;
 
-},{"./components/404":200,"./components/about/aboutPage":201,"./components/app":202,"./components/authors/authorPage":204,"./components/homePage":206,"react":197,"react-router":28}]},{},[207]);
+},{"./components/404":200,"./components/about/aboutPage":201,"./components/app":202,"./components/authors/authorPage":205,"./components/authors/manageAuthorPage":206,"./components/homePage":208,"react":197,"react-router":28}]},{},[209]);
