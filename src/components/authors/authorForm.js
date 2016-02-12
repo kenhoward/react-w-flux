@@ -2,6 +2,7 @@
 
 //This will hold the form [Module 8]
 var React = require('react');
+var Input = require('../common/textInput');
 
 var AuthorForm = React.createClass({
   render: function() {
@@ -9,25 +10,17 @@ var AuthorForm = React.createClass({
       <div className="container">
         <form>
           <h1>Manage Author</h1>
-          <label htmlFor="firstName">First Name</label>
-          <input type="text"
+          <Input
             name="firstName"
-            className="form-control"
-            placeholder="First Name"
-            ref="firstName"
-            onChange={this.props.onChange}
-            value={this.props.author.firstName} />
-          <br />
+            label="First Name"
+            value={this.props.author.firstName}
+            onChange={this.props.onChange} />
 
-          <label htmlFor="lastName">Last Name</label>
-          <input type="text"
+          <Input
             name="lastName"
-            className="form-control"
-            placeholder="Last Name"
-            ref="lastName"
-            onChange={this.props.onChange}
-            value={this.props.author.lastName} />
-          <br />
+            label="Last Name"
+            value={this.props.author.lastName}
+            onChange={this.props.onChange} />
 
           <input type="submit" value="Save" className="btn btn-default" />
         </form>
@@ -44,5 +37,26 @@ module.exports = AuthorForm;
   This won't work until I do a getInitialState in manageAuthorPage
 
   we'll need a change handler for both inputs (onChange)
+
+  // This was the less modular approach before the changes made up there
+  <label htmlFor="firstName">First Name</label>
+  <input type="text"
+    name="firstName"
+    className="form-control"
+    placeholder="First Name"
+    ref="firstName"
+    onChange={this.props.onChange}
+    value={this.props.author.firstName} />
+  <br />
+
+  <label htmlFor="lastName">Last Name</label>
+  <input type="text"
+    name="lastName"
+    className="form-control"
+    placeholder="Last Name"
+    ref="lastName"
+    onChange={this.props.onChange}
+    value={this.props.author.lastName} />
+  <br />
   [/Module 8]
 */
